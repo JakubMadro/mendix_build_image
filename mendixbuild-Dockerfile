@@ -1,0 +1,18 @@
+FROM jmadro/dindpython
+LABEL maintainer="contact@jakubmadro.pl"
+ARG WORKSPACE=app
+RUN mkdir /builder
+COPY mxbuild /builder/mxbuild
+COPY scripts /builder/scripts
+COPY build.py Dockerfile /builder/
+RUN chmod +x /builder/mxbuild /builder/build.py /builder/scripts/*
+RUN mkdir -p app/source app/target
+COPY $WORKSPACE /app/source
+WORKDIR /builder
+
+# Utwórz skrypt entrypoint
+COPY entrypoint.sh /builder/
+RUN chmod +x /builder/entrypoint.sh
+
+# Ustaw entrypoint
+ENTRYPOINT ["/builder/entrypoint.sh"]
